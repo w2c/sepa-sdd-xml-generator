@@ -435,7 +435,8 @@ class SEPAPaymentInfo
     $xml->addChild('ChrgBr', self::CHARGE_BEARER);
 
     $othr = $xml->addChild('CdtrSchmeId')->addChild('Id')->addChild('PrvtId')->addChild('Othr');
-    if (!empty($this->getCreditorSchemeIdentification()))
+    $cdtrSchmeId = $this->getCreditorSchemeIdentification();
+    if (!empty($cdtrSchmeId))
       $othr->addChild('Id', $this->getCreditorSchemeIdentification());
 
     $othr->addChild('SchmeNm')->addChild('Prtry', self::PROPRIETARY_NAME);

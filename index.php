@@ -26,10 +26,10 @@ $paymentInfo->setPaymentInformationIdentification(1); // Your own unique identif
 $paymentInfo->setBatchBooking('false');
 $paymentInfo->setLocalInstrumentCode('CORE'); // Other options: COR1, B2B
 // Type of the job and execution date
-$paymentInfo->setSequenceType('FRST');
+$paymentInfo->setSequenceType('RCUR');
 // CORE: FRST: +6 days, RCUR: +3 days, FNAL: +3 days, OOFF: +6 days
 // B2B: All +2 days
-$paymentInfo->setRequestedCollectionDate(date('Y-m-d', strtotime('+6 days')));
+$paymentInfo->setRequestedCollectionDate(date('Y-m-d', strtotime('+3 days')));
 // Account on which payment should be recieved
 $paymentInfo->setCreditorName('Your creditor name');
 $paymentInfo->setCreditorAccountIBAN('DE89370400440532013000');
