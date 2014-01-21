@@ -139,7 +139,7 @@ class SEPAGroupHeader {
    */
   public function setControlSum($ctrlSum)
   {
-    $this->controlSum = sprintf("%01.2f", $ctrlSum);
+    $this->controlSum = floatval($ctrlSum);
   }
 
   /**

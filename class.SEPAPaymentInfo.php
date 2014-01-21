@@ -212,7 +212,7 @@ class SEPAPaymentInfo
    */
   public function getControlSum()
   {
-    return sprintf("%01.2f", $this->controlSum);
+    return $this->controlSum;
   }
 
   /**
@@ -222,7 +222,7 @@ class SEPAPaymentInfo
    */
   public function setControlSum($ctrlSum)
   {
-    $this->controlSum = $ctrlSum;
+    $this->controlSum = floatval($ctrlSum);
   }
 
   /**

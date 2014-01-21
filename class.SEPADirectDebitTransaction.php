@@ -165,7 +165,7 @@ class SEPADirectDebitTransaction {
    */
   public function getInstructedAmount()
   {
-    return sprintf("%01.2f", $this->instructedAmount);
+    return $this->instructedAmount;
   }
 
   /**
@@ -175,7 +175,7 @@ class SEPADirectDebitTransaction {
    */
   public function setInstructedAmount($instdAmt)
   {
-    $this->instructedAmount = $instdAmt;
+    $this->instructedAmount = floatval($instdAmt);
   }
 
   /**
