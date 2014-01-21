@@ -72,6 +72,11 @@ class SEPAMessage
   public function addPaymentInfo(SEPAPaymentInfo $paymentInfo)
   {
     $this->paymentInfos[] = $paymentInfo;
+
+    $nbOfTxs = $this->getGroupHeader()->getNumberOfTransactions() + $paymentInfo->getNumberOfTransactions();
+    $ctrlSum = $this->getGroupHeader()->getControlSum() + $paymentInfo->getControlSum();
+    $this->getGroupHeader()->setNumberOfTransactions($nbOfTxs);
+    $this->getGroupHeader()->setControlSum($ctrlSum);
   }
 
   /**
@@ -86,19 +91,11 @@ class SEPAMessage
     $this->addSubtree($message, $this->getGroupHeader()->getXmlGroupHeader());
 
     // Add all payment blocks
-    $nbOfTxs = 0;
-    $ctrlSum = 0.00;
     for ($i = 0; $i < count($this->paymentInfos); $i++)
-    {
       $this->addSubtree($message, $this->paymentInfos[$i]->getXmlPaymentInfo());
 
-      $nbOfTxs += $this->paymentInfos[$i]->getNumberOfTransactions();
-      $ctrlSum += $this->paymentInfos[$i]->getControlSum();
-    }
-    $this->getGroupHeader()->setNumberOfTransactions($nbOfTxs);
-    $this->getGroupHeader()->setControlSum($ctrlSum);
-    $message->GrpHdr->NbOfTxs = $nbOfTxs;
-    $message->GrpHdr->CtrlSum = $ctrlSum;
+    $message->GrpHdr->NbOfTxs = $this->getGroupHeader()->getNumberOfTransactions();
+    $message->GrpHdr->CtrlSum = $this->getGroupHeader()->getControlSum();
 
     // Finally add the XML structure
     $doc = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?>

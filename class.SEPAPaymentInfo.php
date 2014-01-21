@@ -192,20 +192,6 @@ class SEPAPaymentInfo
   }
 
   /**
-   * Setter for Number of Transactions (NbOfTxs)
-   *
-   * @param int $nbOfTxs
-   * @throws SEPAException
-   */
-  public function setNumberOfTransactions($nbOfTxs)
-  {
-    if (!preg_match("/^[0-9]{1,15}\z/", $nbOfTxs))
-      throw new SEPAException("Invalid NbOfTxs value (max. 15 digits).");
-
-    $this->numberOfTransactions = $nbOfTxs;
-  }
-
-  /**
    * Getter for ControlSum (CtrlSum)
    *
    * @return float
@@ -213,16 +199,6 @@ class SEPAPaymentInfo
   public function getControlSum()
   {
     return $this->controlSum;
-  }
-
-  /**
-   * Setter for ControlSum (CtrlSum)
-   *
-   * @param float $ctrlSum
-   */
-  public function setControlSum($ctrlSum)
-  {
-    $this->controlSum = floatval($ctrlSum);
   }
 
   /**
@@ -408,6 +384,9 @@ class SEPAPaymentInfo
   public function addTransaction(SEPADirectDebitTransaction $transaction)
   {
     $this->transactions[] = $transaction;
+
+    $this->numberOfTransactions++;
+    $this->controlSum += $transaction->getInstructedAmount();
   }
 
   /**
@@ -441,18 +420,13 @@ class SEPAPaymentInfo
 
     $othr->addChild('SchmeNm')->addChild('Prtry', self::PROPRIETARY_NAME);
 
-    // Add all transactions to the current PaymentInfo block and refresh NbOfTxs and CtrlSum
-    $ctrlsum = 0.00;
-    $this->setNumberOfTransactions(count($this->transactions));
+    // Add all transactions to the current PaymentInfo block
     for ($i = 0; $i < $this->getNumberOfTransactions(); $i++)
     {
       $domPaymentInfo = dom_import_simplexml($xml);
       $domTransaction = dom_import_simplexml($this->transactions[$i]->getXmlDirectDebitTransaction());
       $domPaymentInfo->appendChild($domPaymentInfo->ownerDocument->importNode($domTransaction, true));
-
-      $ctrlsum += $this->transactions[$i]->getInstructedAmount();
     }
-    $this->setControlSum($ctrlsum);
     $xml->NbOfTxs = $this->getNumberOfTransactions();
     $xml->CtrlSum = $this->getControlSum();
 
