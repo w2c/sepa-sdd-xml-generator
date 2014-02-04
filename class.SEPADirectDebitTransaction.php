@@ -360,7 +360,11 @@ class SEPADirectDebitTransaction {
   {
     $xml = new SimpleXMLElement("<DrctDbtTxInf></DrctDbtTxInf>");
     $xml->addChild('PmtId')->addChild('InstrId', $this->getInstructionIdentification());
-    $xml->PmtId->addChild('EndToEndId', $this->getEndToEndIdentification());
+
+    $endToEndId = $this->getEndToEndIdentification();
+    if (empty($endToEndId))
+      $endToEndId = 'NOTPROVIDED';
+    $xml->PmtId->addChild('EndToEndId', $endToEndId);
 
     $xml->addChild('InstdAmt', $this->getInstructedAmount())->addAttribute('Ccy', self::CURRENCY_CODE);
     $xml->addChild('ChrgBr', self::CHARGE_BEARER);
@@ -369,7 +373,13 @@ class SEPADirectDebitTransaction {
     $xml->DrctDbtTx->MndtRltdInf->addChild('DtOfSgntr', $this->getDateOfSignature());
     $xml->DrctDbtTx->MndtRltdInf->addChild('AmdmntInd', $this->getAmendmentIndicator());
 
-    $xml->addChild('DbtrAgt')->addChild('FinInstnId')->addChild('BIC', $this->getDebtorAgentBIC());
+    // The BIC is optional for national payments (IBAN only)
+    $bic = $this->getDebtorAgentBIC();
+    if (!empty($bic))
+      $xml->addChild('DbtrAgt')->addChild('FinInstnId')->addChild('BIC', $bic);
+    else
+      $xml->addChild('DbtrAgt')->addChild('FinInstnId')->addChild('Othr')->addChild('Id', 'NOTPROVIDED');
+
     $xml->addChild('Dbtr')->addChild('Nm', $this->getDebtorName());
     $xml->addChild('DbtrAcct')->addChild('Id')->addChild('IBAN', $this->getDebtorIBAN());
 
