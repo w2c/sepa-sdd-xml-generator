@@ -410,7 +410,14 @@ class SEPAPaymentInfo
     $xml->addChild('ReqdColltnDt', $this->getRequestedCollectionDate());
     $xml->addChild('Cdtr')->addChild('Nm', $this->getCreditorName());
     $xml->addChild('CdtrAcct')->addChild('Id')->addChild('IBAN', $this->getCreditorAccountIBAN());
-    $xml->addChild('CdtrAgt')->addChild('FinInstnId')->addChild('BIC', $this->getCreditorAgentBIC());
+
+    // The BIC is optional for national payments (IBAN only)
+    $bic = $this->getCreditorAgentBIC();
+    if (!empty($bic))
+      $xml->addChild('CdtrAgt')->addChild('FinInstnId')->addChild('BIC', $bic);
+    else
+      $xml->addChild('CdtrAgt')->addChild('FinInstnId')->addChild('Othr')->addChild('Id', 'NOTPROVIDED');
+
     $xml->addChild('ChrgBr', self::CHARGE_BEARER);
 
     $othr = $xml->addChild('CdtrSchmeId')->addChild('Id')->addChild('PrvtId')->addChild('Othr');
