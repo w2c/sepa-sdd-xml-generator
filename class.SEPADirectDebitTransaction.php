@@ -175,7 +175,7 @@ class SEPADirectDebitTransaction {
    */
   public function setInstructedAmount($instdAmt)
   {
-    $this->instructedAmount = floatval($instdAmt);
+    $this->instructedAmount = number_format(floatval($instdAmt), 2, '.', '');
   }
 
   /**
