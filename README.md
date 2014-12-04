@@ -4,7 +4,7 @@ SEPA Direct Debit (SDD) XML Generator
 ### How to use?
 
 See *index.php* for an example how to create a SEPA message. 
-  * Set the namespace according to your requirements. By default, the message scheme for Germany (`pain.008.003.02`) is set.<br>
+  * Set the namespace according to your requirements. By default, the message scheme for Germany (`pain.008.001.02`) is set.<br>
   For Austria you would have to change it to `ISO:pain.008.001.02:APC:STUZZA:payments:003`<br>
   Instead if you want the EPC standard, set `urn:iso:std:iso:20022:tech:xsd:pain.008.001.02`
   * Note that the `SEPAGroupHeader` must exist only once per message.

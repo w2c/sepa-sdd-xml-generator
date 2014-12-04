@@ -15,7 +15,7 @@ require_once('class.SEPAMessage.php');
 require_once('class.SEPAPaymentInfo.php');
 require_once('class.URLify.php');
 
-$message = new SEPAMessage('urn:iso:std:iso:20022:tech:xsd:pain.008.003.02');
+$message = new SEPAMessage('urn:iso:std:iso:20022:tech:xsd:pain.008.001.02');
 $groupHeader = new SEPAGroupHeader(); // (1..1)
 $groupHeader->setMessageIdentification('SEPA-'.time()); // Unique ID for this job
 $groupHeader->setInitiatingPartyName('Web wack creations'); // Name of the party sending the job. Usually the creditor
@@ -50,5 +50,5 @@ $paymentInfo->addTransaction($transaction);
 
 $message->addPaymentInfo($paymentInfo);
 
-//if ($message->validateXML('validation_schemes/pain.008.003.02.xsd'))
+//if ($message->validateXML('validation_schemes/pain.008.001.02_GBIC_1.xsd'))
   echo $message->printXML();
