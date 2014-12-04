@@ -16,14 +16,6 @@ class SEPADirectDebitTransaction {
   const CURRENCY_CODE = 'EUR';
 
   /**
-   * Specifies which party/parties will bear the charges associated with the
-   * processing of the payment transaction. (Tag: <ChrgBr>)
-   *
-   * @var string
-   */
-  const CHARGE_BEARER = 'SLEV';
-
-  /**
    * The instruction identification is a point to point reference that can be used between
    * the instructing party and the instructed party to refer to the individual instruction.
    * It can be included in several messages related to the instruction. (Tag: <DrctDbtTxInf->PmtId->InstrId>)
@@ -367,7 +359,6 @@ class SEPADirectDebitTransaction {
     $xml->PmtId->addChild('EndToEndId', $endToEndId);
 
     $xml->addChild('InstdAmt', $this->getInstructedAmount())->addAttribute('Ccy', self::CURRENCY_CODE);
-    $xml->addChild('ChrgBr', self::CHARGE_BEARER);
 
     $xml->addChild('DrctDbtTx')->addChild('MndtRltdInf')->addChild('MndtId', $this->getMandateIdentification());
     $xml->DrctDbtTx->MndtRltdInf->addChild('DtOfSgntr', $this->getDateOfSignature());
