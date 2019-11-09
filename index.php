@@ -50,5 +50,5 @@ $paymentInfo->addTransaction($transaction);
 
 $message->addPaymentInfo($paymentInfo);
 
-//if ($message->validateXML('validation_schemes/pain.008.001.02_GBIC_1.xsd'))
+//if ($message->validateXML('validation_schemes/pain.008.001.02_GBIC_3.xsd'))
   echo $message->printXML();

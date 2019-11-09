@@ -78,6 +78,42 @@ class SEPADirectDebitTransaction {
    */
   private $debtorName = '';
 
+
+  /**
+   * Post code of a debtor's postal address (Tag: <Dbtr->PstlAdr->PstCd>)
+   *
+   * @var string
+   */
+  private $debtorPostalCode = '';
+
+  /**
+   * Town name of debtor's postal address (Tag: <Dbtr->PstlAdr->TwnNm>)
+   *
+   * @var string
+   */
+  private $debtorTownName = '';
+
+  /**
+   * Country code of debtor's postal address (Tag: <Dbtr->PstlAdr->Ctry>)
+   *
+   * @var string
+   */
+  private $debtorCountry = '';
+
+  /**
+   * Address Line of a debtor's postal address (Tag: <Dbtr->PstlAdr->AdrLine>)
+   *
+   * @var string
+   */
+  private $debtorAddressLine = '';
+
+  /**
+   * Address line 2 of a debtor's postal address (Tag: <Dbtr->PstlAdr->AdrLine>)
+   *
+   * @var string
+   */
+  private $debtorAddressLine2 = '';
+
   /**
    * Unambiguous identification of the account of the debtor to which a debit entry will
    * be made as a result of the transaction. (Tag: <DbtrAcct->Id->IBAN>)
@@ -276,6 +312,122 @@ class SEPADirectDebitTransaction {
   }
 
   /**
+   * Getter for Debtor Postal Code (Dbtr->PstlAdr->PstCd)
+   *
+   * @return string
+   */
+  public function getDebtorPostalCode()
+  {
+    return $this->debtorPostalCode;
+  }
+
+  /**
+   * Setter for Debtor Postal Code (Dbtr->PstlAdr->PstCd)
+   *
+   * @param string $pc
+   * @throws SEPAException
+   */
+  public function setDebtorPostalCode($pc)
+  {
+    if (strlen($pc) == 0 || strlen($pc) > 16)
+      throw new SEPAException("Invalid debtor postal code (max. 16 characters).");
+
+    $this->debtorPostalCode = $pc;
+  }
+
+  /**
+   * Getter for Debtor Town Name (Dbtr->PstlAdr->TwnNm)
+   *
+   * @return string
+   */
+  public function getDebtorTownName() {
+    return $this->debtorTownName;
+  }
+
+  /**
+   * Setter for Debtor Town Name (Dbtr->PstlAdr->TwnNm)
+   *
+   * @param string $townname
+   * @throws SEPAException
+   */
+  public function setDebtorTownName($townname)
+  {
+    if (strlen($townname) == 0 || strlen($townname) > 35)
+      throw new SEPAException("Invalid debtor town name (max. 35 characters).");
+
+    $this->debtorTownName = $townname;
+  }
+
+  /**
+   * Getter for Debtor Country Code (Dbtr->PstlAdr->Ctry)
+   *
+   * @return string
+   */
+  public function getDebtorCountry() {
+    return $this->debtorCountry;
+  }
+
+  /**
+   * Setter for Debtor Country Code (Dbtr->PstlAdr->Ctry)
+   *
+   * @param string $ctry
+   * @throws SEPAException
+   */
+  public function setDebtorCountry($ctry)
+  {
+    if (strlen($ctry) != 2)
+      throw new SEPAException("Invalid debtor country code (2 characters).");
+
+    $this->debtorCountry = $ctry;
+  }
+
+  /**
+   * Getter for Debtor Address Line (Dbtr->PstlAdr->AdrLine)
+   *
+   * @return string
+   */
+  public function getDebtorAddressLine() {
+    return $this->debtorAddressLine;
+  }
+
+  /**
+   * Setter for Debtor Address Line (Dbtr->PstlAdr->AdrLine)
+   *
+   * @param string $address
+   * @throws SEPAException
+   */
+  public function setDebtorAddressLine($address)
+  {
+    if (strlen($address) == 0 || strlen($address) > 70)
+      throw new SEPAException("Invalid debtor address line (max. 70 characters).");
+
+    $this->debtorAddressLine = $address;
+  }
+
+  /**
+   * Getter for Debtor Address Line 2 (Dbtr->PstlAdr->AdrLine)
+   *
+   * @return string
+   */
+  public function getDebtorAddressLine2() {
+    return $this->debtorAddressLine2;
+  }
+
+  /**
+   * Setter for Debtor Address Line 2 (Dbtr->PstlAdr->AdrLine)
+   *
+   * @param string $address
+   * @throws SEPAException
+   */
+  public function setDebtorAddressLine2($address)
+  {
+    if (strlen($address) == 0 || strlen($address) > 70)
+      throw new SEPAException("Invalid debtor address line 2 (max. 70 characters).");
+
+    $this->debtorAddressLine2 = $address;
+  }
+
+  /**
    * Setter for Debtor Name (Dbtr->Nm)
    *
    * @param string $dbtr
@@ -372,6 +524,23 @@ class SEPADirectDebitTransaction {
       $xml->addChild('DbtrAgt')->addChild('FinInstnId')->addChild('Othr')->addChild('Id', 'NOTPROVIDED');
 
     $xml->addChild('Dbtr')->addChild('Nm', $this->getDebtorName());
+
+    // Add debtor postal address if specified
+    if (!empty($this->getDebtorCountry())) {
+      $xml->Dbtr->addChild('PstlAdr');
+
+      if (!empty($this->getDebtorPostalCode()))
+        $xml->Dbtr->PstlAdr->addChild('PstCd', $this->getDebtorPostalCode());
+      if (!empty($this->getDebtorTownName()))
+        $xml->Dbtr->PstlAdr->addChild('TwnNm', $this->getDebtorTownName());
+
+      $xml->Dbtr->PstlAdr->addChild('Ctry', $this->getDebtorCountry());
+      if (!empty($this->getDebtorAddressLine()))
+        $xml->Dbtr->PstlAdr->addChild('AdrLine', $this->getDebtorAddressLine());
+      if (!empty($this->getDebtorAddressLine2()))
+        $xml->Dbtr->PstlAdr->addChild('AdrLine', $this->getDebtorAddressLine2());
+    }
+
     $xml->addChild('DbtrAcct')->addChild('Id')->addChild('IBAN', $this->getDebtorIBAN());
 
     $xml->addChild('RmtInf')->addChild('Ustrd', $this->getRemittanceInformation());
