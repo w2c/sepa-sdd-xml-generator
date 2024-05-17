@@ -198,7 +198,7 @@ class SEPAPaymentInfo
    */
   public function getControlSum()
   {
-    return $this->controlSum;
+    return round($this->controlSum, 2);
   }
 
   /**
